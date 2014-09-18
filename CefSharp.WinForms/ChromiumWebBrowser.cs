@@ -36,8 +36,15 @@ namespace CefSharp.WinForms
         public IDictionary<string, object> BoundObjects { get; private set; }
         public double ZoomLevel
         {
-            get { return managedCefBrowserAdapter.GetZoomLevel(); }
-            set { managedCefBrowserAdapter.SetZoomLevel(value); }
+            get
+            {
+                if (managedCefBrowserAdapter == null) return 0;
+                return managedCefBrowserAdapter.GetZoomLevel(); 
+            }
+            set {
+                if (managedCefBrowserAdapter == null) return;
+                managedCefBrowserAdapter.SetZoomLevel(value); 
+            }
          }
 
         static ChromiumWebBrowser()
@@ -78,11 +85,13 @@ namespace CefSharp.WinForms
 
         public void Load(String url)
         {
+            if (managedCefBrowserAdapter == null) return;
             managedCefBrowserAdapter.LoadUrl(url);
         }
 
         public void LoadHtml(string html, string url)
         {
+            if (managedCefBrowserAdapter == null) return;
             managedCefBrowserAdapter.LoadHtml(html, url);
         }
 
@@ -93,6 +102,7 @@ namespace CefSharp.WinForms
 
         public void ExecuteScriptAsync(string script)
         {
+            if (managedCefBrowserAdapter == null) return;
             managedCefBrowserAdapter.ExecuteScriptAsync(script);
         }
 
@@ -103,6 +113,8 @@ namespace CefSharp.WinForms
 
         public object EvaluateScript(string script, TimeSpan? timeout)
         {
+            if (managedCefBrowserAdapter == null) return null;
+
             if (timeout == null)
             {
                 timeout = TimeSpan.MaxValue;
@@ -130,8 +142,8 @@ namespace CefSharp.WinForms
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
-            if (managedCefBrowserAdapter != null)
-                managedCefBrowserAdapter.OnSizeChanged(Handle);
+            if (managedCefBrowserAdapter == null) return;
+            managedCefBrowserAdapter.OnSizeChanged(Handle);
         }
 
         void IWebBrowserInternal.SetAddress(string address)
@@ -231,18 +243,18 @@ namespace CefSharp.WinForms
 
         public void Find(int identifier, string searchText, bool forward, bool matchCase, bool findNext)
         {
+            if (managedCefBrowserAdapter == null) return;
             managedCefBrowserAdapter.Find(identifier, searchText, forward, matchCase, findNext);
         }
 
         public void StopFinding(bool clearSelection)
         {
+            if (managedCefBrowserAdapter == null) return;
             managedCefBrowserAdapter.StopFinding(clearSelection);
         }
 
         void IWebBrowserInternal.ShowDevTools()
         {
-            // TODO: Do something about this one.
-            var devToolsUrl = managedCefBrowserAdapter.DevToolsUrl;
             throw new NotImplementedException("Implement when Cef upgraded to 1750.");
         }
 
@@ -253,21 +265,27 @@ namespace CefSharp.WinForms
 
         public string DevToolsUrl
         {
-            get { return managedCefBrowserAdapter.DevToolsUrl; }
+            get {
+                if (managedCefBrowserAdapter == null) return null;
+                return managedCefBrowserAdapter.DevToolsUrl;
+            }
         }
 
         public void Stop()
         {
+            if (managedCefBrowserAdapter == null) return;
             managedCefBrowserAdapter.Stop();
         }
 
         public void Back()
         {
+            if (managedCefBrowserAdapter == null) return;
             managedCefBrowserAdapter.GoBack();
         }
 
         public void Forward()
         {
+            if (managedCefBrowserAdapter == null) return;
             managedCefBrowserAdapter.GoForward();
         }
 
@@ -278,56 +296,68 @@ namespace CefSharp.WinForms
 
         public void Reload(bool ignoreCache)
         {
+            if (managedCefBrowserAdapter == null) return;
             managedCefBrowserAdapter.Reload(ignoreCache);
         }
 
         public void Undo()
         {
+            if (managedCefBrowserAdapter == null) return;
             managedCefBrowserAdapter.Undo();
         }
 
         public void Redo()
         {
+            if (managedCefBrowserAdapter == null) return;
             managedCefBrowserAdapter.Redo();
         }
 
         public void Cut()
         {
+            if (managedCefBrowserAdapter == null) return;
             managedCefBrowserAdapter.Cut();
         }
 
         public void Copy()
         {
+            if (managedCefBrowserAdapter == null) return;
             managedCefBrowserAdapter.Copy();
         }
 
         public void Paste()
         {
+            if (managedCefBrowserAdapter == null) return;
             managedCefBrowserAdapter.Paste();
         }
 
         public void Delete()
         {
+            if (managedCefBrowserAdapter == null) return;
             managedCefBrowserAdapter.Delete();
         }
 
         public void SelectAll()
         {
+            if (managedCefBrowserAdapter == null) return;
             managedCefBrowserAdapter.SelectAll();
         }
 
         public void Print()
         {
+            if (managedCefBrowserAdapter == null) return;
             managedCefBrowserAdapter.Print();
         }
 
         public void ViewSource()
         {
+            if (managedCefBrowserAdapter == null) return;
             managedCefBrowserAdapter.ViewSource();
         }
 
         public Task<string> GetSourceAsync()
         {
+            if (managedCefBrowserAdapter == null) return null;
+
             var taskStringVisitor = new TaskStringVisitor();
             managedCefBrowserAdapter.GetSource(taskStringVisitor);
             return taskStringVisitor.Task;
@@ -335,6 +365,8 @@ namespace CefSharp.WinForms
 
         public Task<string> GetTextAsync()
         {
+            if (managedCefBrowserAdapter == null) return null;
+
             var taskStringVisitor = new TaskStringVisitor();
             managedCefBrowserAdapter.GetText(taskStringVisitor);
             return taskStringVisitor.Task;
