@@ -1,4 +1,4 @@
-﻿// Copyright © 2010-2016 The CefSharp Authors. All rights reserved.
+﻿// Copyright © 2010-2017 The CefSharp Authors. All rights reserved.
 //
 // Use of this source code is governed by a BSD-style license that can be found in the LICENSE file.
 
@@ -208,14 +208,12 @@ namespace CefSharp
 
             if (handler != nullptr)
             {
-                //By this point the other IBrowser references have been disposed
+                //By this point it's possible IBrowser references have been disposed
                 //Rather than attempting to rework the rather complex closing logic
                 //It's easier to pass in a new wrapper and dispose it straight away
-                auto browserWrapper = gcnew CefSharpBrowserWrapper(browser);
+                CefSharpBrowserWrapper browserWrapper(browser);
 
-                handler->OnBeforeClose(_browserControl, browserWrapper);
-
-                delete browserWrapper;
+                handler->OnBeforeClose(_browserControl, %browserWrapper);
             }
 
             if (isPopup)
